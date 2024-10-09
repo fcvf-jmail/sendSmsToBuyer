@@ -6,8 +6,11 @@ const bot = new Telegraf(process.env.botToken)
 const express = require('express');
 const app = express();
 
-const senderFilePath = path.join(__dirname, "senders.json")
-const payloadFilePath = path.join(__dirname, "payloads.json")
+const senderFilePath = path.join(__dirname, "senders.json");
+const payloadFilePath = path.join(__dirname, "payloads.json");
+
+const exampleSenderFilePath = path.join(__dirname, "senders.example.json");
+const examplePayloadFilePath = path.join(__dirname, "payloads.example.json");
 
 app.use(express.json());
 
@@ -113,3 +116,19 @@ function addPayloadToFile(payload, codeLength) {
 }
 
 const generateLink = async(payload) => `https://t.me/${(await bot.telegram.getMe()).username}?start=${payload}`;
+
+function checkAndCopyFiles() {
+    if (!fs.existsSync(senderFilePath)) 
+    {
+        fs.copyFileSync(exampleSenderFilePath, senderFilePath);
+        console.log(`Файл "${senderFilePath}" не найден. Скопировал файл "${exampleSenderFilePath}".`);
+    }
+
+    if (!fs.existsSync(payloadFilePath)) 
+    {
+        fs.copyFileSync(examplePayloadFilePath, payloadFilePath);
+        console.log(`Файл "${payloadFilePath}" не найден. Скопировал файл "${examplePayloadFilePath}".`);
+    }
+}
+
+checkAndCopyFiles();
