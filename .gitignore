@@ -1,0 +1,4 @@
+.env
+node_modules
+senders.json
+payloads.json
