@@ -6,7 +6,7 @@ const bot = new Telegraf(process.env.botToken)
 const express = require('express');
 const app = express();
 
-const senderFilePath = path.join(__dirname, "sender.json")
+const senderFilePath = path.join(__dirname, "senders.json")
 const payloadFilePath = path.join(__dirname, "payloads.json")
 
 app.use(express.json());
