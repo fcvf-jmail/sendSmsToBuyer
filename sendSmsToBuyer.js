@@ -36,12 +36,16 @@ bot.start((ctx) => {
     return ctx.reply("Теперь вам будут приходить коды из сообщений")
 });
 
-bot.command("getSenders", ctx => {
+bot.command("getSenders", async ctx => {
     if(!userIsAdmin(ctx.from.id)) return
     const senders = getSenders();
     var text = "";
-    for (var codeLength in senders) text += `${codeLength} - ${senders[codeLength]}\n`
-    ctx.reply(text)
+    for (var codeLength in senders) {
+        const sender = await bot.telegram.getChat(senders[codeLength])
+        text += `${codeLength} - <code>${sender.first_name}${sender.last_name ? ` ${sender.last_name}` : ""}</code> `;
+        text += `(${sender.username ? `@${sender.username}` : `<code>${sender.id}</code>`})\n`;
+    }
+    ctx.reply(text, {parse_mode: "HTML"})
 })
 
 bot.command("resetSenders", ctx => {
